@@ -1,0 +1,59 @@
+{
+  "companies": [
+    {
+      "slug": "acme-ai",
+      "name": "Acme AI",
+      "tagline": "Building the intelligent tools that ambitious teams use every day.",
+      "roles": [
+        {
+          "id": "founding-engineer",
+          "title": "Founding Engineer",
+          "location": "San Francisco",
+          "workplace": "Hybrid",
+          "employment": "Full-time",
+          "description": "Work directly with the founders to turn ambitious AI ideas into beautifully simple products.",
+          "questions": [
+            "Why this role?",
+            "Relevant experience",
+            "Portfolio/LinkedIn URL"
+          ]
+        },
+        {
+          "id": "product-designer",
+          "title": "Product Designer",
+          "location": "Anywhere",
+          "workplace": "Remote",
+          "employment": "Full-time",
+          "description": "Own the end-to-end product experience and help define how people collaborate with AI.",
+          "questions": [
+            "Why this role?",
+            "Tell us about a product you are proud of",
+            "Portfolio URL"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "psytech-ai",
+      "name": "PsyTech AI",
+      "logoUrl": "https://psytech.ai",
+      "tagline": "Psychology + Technology",
+      "roles": [
+        {
+          "id": "ai-orchaestrator-1",
+          "title": "AI Orchaestrator",
+          "location": "New Delhi",
+          "workplace": "Onsite",
+          "employment": "Full-time",
+          "description": "This is a full-time on-site role located in the Greater Delhi Area for an AI Orchestrator. The role involves designing, developing, and deploying AI-powered systems tailored to PsyTech's mission-driven initiatives. Responsibilities include collaborating with product, engineering, and data science teams to integrate AI tools, evaluating emerging technologies, and ensuring scalable AI workflows. The AI Orchestrator will also focus on identifying new opportunities to apply AI across wellness, investing, and community-focused projects.",
+          "questions": [
+            "Why this role?",
+            "Relevant experience",
+            "Portfolio/LinkedIn URL"
+          ]
+        }
+      ]
+    }
+  ],
+  "applications": []
+}
