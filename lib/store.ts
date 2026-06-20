@@ -1,14 +1,36 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { Redis } from "@upstash/redis";
 import type { Application, Company, Store } from "./types";
 
 const storePath = path.join(process.cwd(), "data", "store.json");
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
+const redis = redisUrl && redisToken ? new Redis({ url: redisUrl, token: redisToken }) : null;
+const storeKey = "hiringat:store";
 
 async function readStore(): Promise<Store> {
-  return JSON.parse(await fs.readFile(storePath, "utf8")) as Store;
+  const seed = JSON.parse(await fs.readFile(storePath, "utf8")) as Store;
+
+  if (!redis) return seed;
+
+  const stored = await redis.get<Store>(storeKey);
+  if (stored) return stored;
+
+  await redis.set(storeKey, seed);
+  return seed;
 }
 
 async function writeStore(store: Store) {
+  if (redis) {
+    await redis.set(storeKey, store);
+    return;
+  }
+
+  if (process.env.VERCEL) {
+    throw new Error("Cloud storage is not configured. Connect an Upstash Redis database to this Vercel project and redeploy.");
+  }
+
   await fs.writeFile(storePath, JSON.stringify(store, null, 2));
 }
 

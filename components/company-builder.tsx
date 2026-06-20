@@ -16,6 +16,7 @@ export function CompanyBuilder() {
   const [logoUrl, setLogoUrl] = useState("");
   const [tagline, setTagline] = useState("");
   const [roles, setRoles] = useState<Role[]>([emptyRole()]);
+  const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
 
   const updateRole = (id: string, patch: Partial<Role>) => setRoles((current) => current.map((role) => role.id === id ? { ...role, ...patch } : role));
@@ -28,7 +29,11 @@ export function CompanyBuilder() {
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
-    startTransition(() => createCompany({ slug: "", name, logoUrl, tagline, roles }));
+    setError("");
+    startTransition(async () => {
+      const result = await createCompany({ slug: "", name, logoUrl, tagline, roles });
+      if (result?.error) setError(result.error);
+    });
   }
 
   return (
@@ -60,6 +65,7 @@ export function CompanyBuilder() {
         </div>
         <button type="button" onClick={() => setRoles([...roles, emptyRole()])} className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-black/20 py-4 text-sm font-semibold transition hover:border-black/40 hover:bg-black/[0.02]"><Plus size={18} /> Add another role</button>
       </section>
+      {error && <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">{error}</p>}
       <button disabled={pending} className="button-dark w-full py-4 text-base">{pending ? "Creating your page..." : "Publish hiring page"}<ArrowRight size={19} /></button>
     </form>
   );

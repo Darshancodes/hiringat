@@ -35,7 +35,8 @@ The included demo company is available at `/acme-ai` with two sample roles.
 - TypeScript
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Tabler Icons](https://tabler.io/icons)
-- Local JSON file storage
+- Local JSON storage in development
+- Upstash Redis storage on Vercel
 
 ## Getting Started
 
@@ -95,9 +96,21 @@ lib/
 
 ## Data Storage
 
-Companies, roles, and applications are stored in [`data/store.json`](data/store.json). Next.js server actions read from and write to this file, so data persists between local page refreshes and development server restarts.
+During local development, companies, roles, and applications are stored in [`data/store.json`](data/store.json). Next.js server actions read from and write to this file, so data persists between page refreshes and development server restarts.
 
-This approach is deliberate for a zero-setup demo. Deployments using ephemeral or read-only filesystems will need a persistent database such as SQLite, PostgreSQL, or a hosted data service.
+Vercel Functions have a read-only filesystem, so deployed environments use Upstash Redis. Add an **Upstash Redis** integration to the Vercel project and redeploy. The app recognizes either of these environment variable pairs automatically:
+
+```text
+UPSTASH_REDIS_REST_URL
+UPSTASH_REDIS_REST_TOKEN
+```
+
+or:
+
+```text
+KV_REST_API_URL
+KV_REST_API_TOKEN
+```
 
 ## Current Limitations
 
