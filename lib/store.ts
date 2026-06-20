@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { Redis } from "@upstash/redis";
 import type { Application, Company, Store } from "./types";
+import seedData from "@/data/store.json";
 
 const storePath = path.join(process.cwd(), "data", "store.json");
 const redisUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
@@ -9,16 +10,23 @@ const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_A
 const redis = redisUrl && redisToken ? new Redis({ url: redisUrl, token: redisToken }) : null;
 const storeKey = "hiringat:store";
 
+function getSeedStore(): Store {
+  return structuredClone(seedData) as Store;
+}
+
 async function readStore(): Promise<Store> {
-  const seed = JSON.parse(await fs.readFile(storePath, "utf8")) as Store;
+  if (redis) {
+    const stored = await redis.get<Store>(storeKey);
+    if (stored) return stored;
 
-  if (!redis) return seed;
+    const seed = getSeedStore();
+    await redis.set(storeKey, seed);
+    return seed;
+  }
 
-  const stored = await redis.get<Store>(storeKey);
-  if (stored) return stored;
+  if (process.env.VERCEL) return getSeedStore();
 
-  await redis.set(storeKey, seed);
-  return seed;
+  return JSON.parse(await fs.readFile(storePath, "utf8")) as Store;
 }
 
 async function writeStore(store: Store) {
